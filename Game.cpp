@@ -1,11 +1,12 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp> 
 #include "Player.cpp"
+#include <vector>
 
-using namespace sf; // <3 Cala
+using namespace sf;
 
 int main() 
 {
-    RenderWindow window(VideoMode(200, 200), "SFML works!");
+    RenderWindow window(VideoMode(600, 600), "Nice game bruh!");
     CircleShape shape(100.f);
     shape.setFillColor(Color::Green);
 
@@ -13,7 +14,10 @@ int main()
     const float FPS = 60.0f;
     bool redraw = true;
 
-    Player p("Paoli", 12, 12); 
+    std::vector<Entity*> entities;
+
+    Player p("Paoli", 12, 12, "npc.png"); 
+    entities.push_back(&p);
 
     while (window.isOpen())
     {
@@ -47,10 +51,16 @@ int main()
         if(redraw)
         {
             window.clear();
-            p.update(); 
 
-            window.draw(shape);
-            window.draw(p);
+            //window.draw(p);
+            //window.draw(shape);
+
+            // Con una sola entità sembra stupido ma alla lunga ha senso
+            for(int i = 0; i < entities.size(); i++)
+            {
+                window.draw(*entities[i]);
+                (*entities[i]).update();
+            }
 
             window.display();
         }

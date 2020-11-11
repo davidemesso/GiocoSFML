@@ -2,26 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <SFML/Graphics.hpp> 
-#include "AnimatedTexture.cpp"
+#include "Entity.cpp"
 
 using namespace sf;
 using namespace std;
 
-class Player : public AnimatedSprite
+class Player : public Entity
 {
 public:
-    string name; 
-    float atk; 
-    float life;
-    Sprite sprite;
+    // INHERITED ENTITY FIELDS 
     // Inventory inventory
-    // animation TO DO
 
-    Player(string name, float life, float attack) : AnimatedSprite("npc.png")
+    Player(string name, float life, float attack, string file) : Entity(name, life, attack, file)
     {
-        this->name = name; 
-        this->life = life; 
-        this->atk  = atk; 
+        // SOME PLAYER STUFF
     } 
 
 
