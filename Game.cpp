@@ -6,7 +6,7 @@ using namespace sf;
 
 int main() 
 {
-    RenderWindow window(VideoMode(600, 600), "Nice game bruh!");
+    RenderWindow window(VideoMode(640, 600), "Nice game bruh!");
     CircleShape shape(100.f);
     shape.setFillColor(Color::Green);
 
@@ -18,6 +18,17 @@ int main()
 
     Player p("Paoli", 12, 12, "npc.png"); 
     entities.push_back(&p);
+
+    Texture background;
+    if (!background.loadFromFile("tileset.png"));
+    background.setSmooth(true);
+    background.setRepeated(true);
+    Sprite bg(background, IntRect(32,0,224,224));
+    bg.setScale(2,2);
+
+    sf::View followPlayer; //private member in class
+    followPlayer.setSize(640, 600);
+    window.setView(followPlayer);
 
     while (window.isOpen())
     {
@@ -48,16 +59,16 @@ int main()
                     case Keyboard::Escape:
                         window.close();
                     case Keyboard::Right:
-                        p.setVelocity(1, 0);
+                        p.setVelocity(1, p.getVelocity().y);
                         break;
                     case Keyboard::Left:
-                        p.setVelocity(-1, 0);
+                        p.setVelocity(-1, p.getVelocity().y);
                         break;
                     case Keyboard::Up:
-                        p.setVelocity(0, -1);
+                        p.setVelocity(p.getVelocity().x, -1);
                         break;
                     case Keyboard::Down:
-                        p.setVelocity(0, 1);
+                        p.setVelocity(p.getVelocity().x, 1);
                         break;
                 }
             }
@@ -74,6 +85,13 @@ int main()
                         p.resetVelocityY();
                         break;
                 }
+            
+            if (event.type == sf::Event::Resized)
+            {
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
+                window.setView(sf::View(visibleArea));
+            }
         }   
 
         // Draw
@@ -81,8 +99,11 @@ int main()
         {
             window.clear();
 
+            window.draw(bg);
+
             window.draw(p);
             p.update();
+            
             //window.draw(shape);
 
             // Con una sola entità sembra stupido ma alla lunga ha senso
@@ -92,6 +113,9 @@ int main()
             //         window.draw(*entities[i]);
             //     entities[i]->update();
             // }
+                        
+            followPlayer.setCenter(p.getPosition());
+            window.setView(followPlayer);
 
             window.display();
         }

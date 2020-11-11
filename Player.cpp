@@ -12,7 +12,6 @@ class Player : public Entity
 private:
     float speed = 3;
 public:
-    Vector2f velocity = Vector2f(0, 0);
     // INHERITED ENTITY FIELDS 
     // Inventory inventory
 
@@ -21,9 +20,14 @@ public:
         // SOME PLAYER STUFF
     } 
 
+    Vector2f getVelocity()
+    {
+        return velocity;
+    }
+
     void setVelocity(float x, float y)
     {
-        velocity = Vector2f(x * speed, y * speed);
+        velocity = Vector2f(x, y);
     }
 
     void resetVelocityX()
@@ -48,6 +52,6 @@ public:
     void update()
     {
         AnimatedSprite::update();
-        move(velocity);
+        move(velocity.x * speed, velocity.y * speed);
     } 
 }; 
