@@ -9,6 +9,9 @@ class AnimatedSprite : public sf::Sprite
 {
 private:
     Texture texture;
+    bool visible = true;
+
+public:
     int state = 0;
     int animationSpeed = 25;
     int animationTime = animationSpeed;
@@ -30,6 +33,22 @@ public:
         setScale(Vector2f(2, 2)); 
         setPosition(Vector2f(10, 10));
     }
+
+    void setVisibility(bool visible)
+    {
+        this->visible = visible;
+    }
+
+    bool isVisible()
+    {
+        return visible;
+    }
+
+    // For future custom drawing function
+    // void draw(sf::RenderTarget &window, sf::RenderStates states) const 
+    // {
+    //     window.draw(*this);
+    // }
 
     void update()
     {

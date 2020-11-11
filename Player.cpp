@@ -9,7 +9,10 @@ using namespace std;
 
 class Player : public Entity
 {
+private:
+    float speed = 3;
 public:
+    Vector2f velocity = Vector2f(0, 0);
     // INHERITED ENTITY FIELDS 
     // Inventory inventory
 
@@ -17,6 +20,22 @@ public:
     {
         // SOME PLAYER STUFF
     } 
+
+    void setVelocity(float x, float y)
+    {
+        velocity = Vector2f(x * speed, y * speed);
+    }
+
+    void resetVelocityX()
+    {
+        velocity.x = 0;
+    }
+
+    void resetVelocityY()
+    {
+        velocity.y = 0;
+    }
+
 
 
     // For future custom drawing function
@@ -26,8 +45,9 @@ public:
     // }
 
     // For future custom update function (every frame or tick)
-    // void update()
-    // {
-        
-    // } 
+    void update()
+    {
+        AnimatedSprite::update();
+        move(velocity);
+    } 
 }; 

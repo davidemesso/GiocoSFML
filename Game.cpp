@@ -40,11 +40,40 @@ int main()
         {
             if (event.type == Event::Closed)
                 window.close();
-            else if (event.type == Event::KeyPressed)
-                if (event.key.code == Keyboard::Escape)
-                    window.close();
-                else if (event.key.code == Keyboard::Right)
-                    p.move(1, 0);
+
+            if (event.type == Event::KeyPressed)
+            {
+                switch(event.key.code)
+                {  
+                    case Keyboard::Escape:
+                        window.close();
+                    case Keyboard::Right:
+                        p.setVelocity(1, 0);
+                        break;
+                    case Keyboard::Left:
+                        p.setVelocity(-1, 0);
+                        break;
+                    case Keyboard::Up:
+                        p.setVelocity(0, -1);
+                        break;
+                    case Keyboard::Down:
+                        p.setVelocity(0, 1);
+                        break;
+                }
+            }
+
+            if (event.type == Event::KeyReleased)
+                switch (event.key.code)
+                {
+                    case Keyboard::Right:
+                    case Keyboard::Left:
+                        p.resetVelocityX();
+                        break;
+                    case Keyboard::Up:
+                    case Keyboard::Down:
+                        p.resetVelocityY();
+                        break;
+                }
         }   
 
         // Draw
@@ -52,15 +81,17 @@ int main()
         {
             window.clear();
 
-            //window.draw(p);
+            window.draw(p);
+            p.update();
             //window.draw(shape);
 
             // Con una sola entità sembra stupido ma alla lunga ha senso
-            for(int i = 0; i < entities.size(); i++)
-            {
-                window.draw(*entities[i]);
-                (*entities[i]).update();
-            }
+            // for(int i = 0; i < entities.size(); i++)
+            // {
+            //     if(entities[i]->isVisible())
+            //         window.draw(*entities[i]);
+            //     entities[i]->update();
+            // }
 
             window.display();
         }
