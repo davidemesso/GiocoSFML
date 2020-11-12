@@ -16,11 +16,11 @@ int main()
 
     std::vector<Entity*> entities;
 
-    Player p("Paoli", 12, 12, "npc.png"); 
+    Player p("Paoli", 12, 12, "img/npc.png"); 
     entities.push_back(&p);
 
     Texture background;
-    if (!background.loadFromFile("tileset.png"));
+    if (!background.loadFromFile("img/tileset.png"));
     background.setSmooth(true);
     background.setRepeated(true);
     Sprite bg(background, IntRect(32,0,224,224));

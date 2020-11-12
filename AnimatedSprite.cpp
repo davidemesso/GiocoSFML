@@ -68,8 +68,6 @@ public:
 
         if(velocity.x == 0 && velocity.y == 0)
             setTextureRect(IntRect(0, 0, 32, 32));
-
-
     }   
 
     void update()
