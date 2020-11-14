@@ -13,14 +13,16 @@ using namespace std;
 class Player : public Entity
 {
 private:
-    float speed = 3;
 public:
     // INHERITED ENTITY FIELDS 
     // Inventory inventory
 
-    Player(string name, float life, float attack, string file, Vector2f position = Vector2f(0,0)) : Entity(name, life, attack, file, position)
+    Player() {};
+
+    Player(string name, float life, float attack, string file, Vector2f position = Vector2f(0,0)) 
+        : Entity(name, life, attack, file, position)
     {
-        // SOME PLAYER STUFF
+        speed = 3;
     } 
 
     // For future custom drawing function

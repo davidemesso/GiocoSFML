@@ -15,12 +15,13 @@ int main()
     const float FPS = 60.0f;
     bool redraw = true;
 
-    std::vector<Entity*> entities;
+    std::vector<Enemy*> enemies;
 
-    Player p("Lapis", 12, 12, "img/character.png"); 
-    entities.push_back(&p);
-    Enemy e("vila", 12, 12, "img/log.png"); 
-    entities.push_back(&e);
+    Player p("Lapis", 12, 12, "img/character.png");
+    Enemy e("vila", 12, 12, "img/log.png", &p); 
+    enemies.push_back(&e);
+    for(int i = 0; i < 10; i++)
+        enemies.push_back(new Enemy("vila", 12, 12, "img/log.png", &p));
 
     Texture background;
     if (!background.loadFromFile("img/tileset.png"));
@@ -56,11 +57,11 @@ int main()
                 window.close();
 
             if (event.type == Event::MouseButtonPressed)
-                if(event.key.code == Mouse::Button::Left)
+                if(event.mouseButton.button == Mouse::Button::Left)
                     p.attacking = true;
 
             if (event.type == Event::MouseButtonReleased)
-                if(event.key.code == Mouse::Button::Left)
+                if(event.mouseButton.button == Mouse::Button::Left)
                     p.attacking = false;
 
             if (event.type == Event::KeyPressed)
@@ -107,19 +108,21 @@ int main()
             p.animate();
         }   
 
-        for(int i = 0; i < entities.size(); i++)
-            entities[i]->update();
+        p.update();
+        for(int i = 0; i < enemies.size(); i++)
+            enemies[i]->update();
 
         // Draw
         if(redraw)
         {
             window.clear();
             window.draw(bg);
+            window.draw(p);
 
-            for(int i = 0; i < entities.size(); i++)
-                if(entities[i]->isVisible())
-                    window.draw(*entities[i]);
-                        
+            for(int i = 0; i < enemies.size(); i++)
+                if(enemies[i]->isVisible())
+                    window.draw(*enemies[i]);      
+
             followPlayer.setCenter(p.getPosition());
             window.setView(followPlayer);
 

@@ -24,6 +24,8 @@ public:
     bool attacking = false;
 
 public:
+    AnimatedSprite(){};
+
     AnimatedSprite(string file, Vector2f position = Vector2f(0,0))
     {
         initRendering(file);
@@ -69,15 +71,10 @@ public:
                 yOffset = 3;
         }
 
-
-
         int attackOffset = attacking ? 4 : 0;
         setTextureRect(IntRect(16 * state, 32 * (yOffset + attackOffset), 16, 32));
 
-        if(velocity == Vector2f(0,0))
-            idle = true;
-        else 
-            idle = false;
+        idle = velocity == Vector2f(0,0)? true : false;
     }   
 
     void update()

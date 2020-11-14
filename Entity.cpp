@@ -16,9 +16,12 @@ public:
     float atk; 
     float life;
     Sprite sprite;
-    float speed = 3;
+    float speed;
+    
+    Entity(){};
 
-    Entity(string name, float life, float attack, string file, Vector2f position = Vector2f(0,0)) : AnimatedSprite(file, position)
+    Entity(string name, float life, float attack, string file, Vector2f position = Vector2f(0,0)) 
+        : AnimatedSprite(file, position)
     {
         this->name = name; 
         this->life = life; 
@@ -52,4 +55,4 @@ public:
     } 
 }; 
 
-#endif
+#endif  
