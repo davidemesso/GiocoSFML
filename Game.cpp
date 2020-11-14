@@ -16,14 +16,14 @@ int main()
 
     std::vector<Entity*> entities;
 
-    Player p("Paoli", 12, 12, "img/npc.png"); 
+    Player p("Paoli", 12, 12, "img/character.png"); 
     entities.push_back(&p);
 
     Texture background;
     if (!background.loadFromFile("img/tileset.png"));
     background.setSmooth(true);
     background.setRepeated(true);
-    Sprite bg(background, IntRect(32,0,224,224));
+    Sprite bg(background, IntRect(300, 0, 210, 150));
     bg.setScale(2,2);
 
     sf::View followPlayer; //private member in class
@@ -52,22 +52,30 @@ int main()
             if (event.type == Event::Closed)
                 window.close();
 
+            if (event.type == Event::MouseButtonPressed)
+                if(event.key.code == Mouse::Button::Left)
+                    p.attacking = true;
+
+            if (event.type == Event::MouseButtonReleased)
+                if(event.key.code == Mouse::Button::Left)
+                    p.attacking = false;
+
             if (event.type == Event::KeyPressed)
             {
                 switch(event.key.code)
                 {  
                     case Keyboard::Escape:
                         window.close();
-                    case Keyboard::Right:
+                    case Keyboard::D:
                         p.setVelocity(1, p.getVelocity().y);
                         break;
-                    case Keyboard::Left:
+                    case Keyboard::A:
                         p.setVelocity(-1, p.getVelocity().y);
                         break;
-                    case Keyboard::Up:
+                    case Keyboard::W:
                         p.setVelocity(p.getVelocity().x, -1);
                         break;
-                    case Keyboard::Down:
+                    case Keyboard::S:
                         p.setVelocity(p.getVelocity().x, 1);
                         break;
                 }
@@ -76,12 +84,12 @@ int main()
             if (event.type == Event::KeyReleased)
                 switch (event.key.code)
                 {
-                    case Keyboard::Right:
-                    case Keyboard::Left:
+                    case Keyboard::D:
+                    case Keyboard::A:
                         p.resetVelocityX();
                         break;
-                    case Keyboard::Up:
-                    case Keyboard::Down:
+                    case Keyboard::W:
+                    case Keyboard::S:
                         p.resetVelocityY();
                         break;
                 }
