@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp> 
 #include "Player.cpp"
+#include "Enemy.cpp"
 #include <vector>
 
 using namespace sf;
@@ -16,8 +17,10 @@ int main()
 
     std::vector<Entity*> entities;
 
-    Player p("Paoli", 12, 12, "img/character.png"); 
+    Player p("Lapis", 12, 12, "img/character.png"); 
     entities.push_back(&p);
+    Enemy e("vila", 12, 12, "img/log.png"); 
+    entities.push_back(&e);
 
     Texture background;
     if (!background.loadFromFile("img/tileset.png"));
@@ -100,27 +103,22 @@ int main()
                 sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
                 window.setView(sf::View(visibleArea));
             }
+
+            p.animate();
         }   
+
+        for(int i = 0; i < entities.size(); i++)
+            entities[i]->update();
 
         // Draw
         if(redraw)
         {
             window.clear();
-
             window.draw(bg);
 
-            window.draw(p);
-            p.update();
-            
-            //window.draw(shape);
-
-            // Con una sola entità sembra stupido ma alla lunga ha senso
-            // for(int i = 0; i < entities.size(); i++)
-            // {
-            //     if(entities[i]->isVisible())
-            //         window.draw(*entities[i]);
-            //     entities[i]->update();
-            // }
+            for(int i = 0; i < entities.size(); i++)
+                if(entities[i]->isVisible())
+                    window.draw(*entities[i]);
                         
             followPlayer.setCenter(p.getPosition());
             window.setView(followPlayer);

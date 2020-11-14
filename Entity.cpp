@@ -1,3 +1,6 @@
+#ifndef ENTITY
+#define ENTITY 
+
 #include <stdlib.h>
 #include <string.h>
 #include <SFML/Graphics.hpp> 
@@ -13,17 +16,40 @@ public:
     float atk; 
     float life;
     Sprite sprite;
+    float speed = 3;
 
-    Entity(string name, float life, float attack, string file) : AnimatedSprite(file)
+    Entity(string name, float life, float attack, string file, Vector2f position = Vector2f(0,0)) : AnimatedSprite(file, position)
     {
         this->name = name; 
         this->life = life; 
         this->atk  = atk; 
     } 
 
-    // For future custom update function (every frame or tick)
-    // void update()
-    // {
-        
-    // } 
+    Vector2f getVelocity()
+    {
+        return velocity;
+    }
+
+    void setVelocity(float x, float y)
+    {
+        velocity = Vector2f(x, y);
+    }
+
+    void resetVelocityX()
+    {
+        velocity.x = 0;
+    }
+
+    void resetVelocityY()
+    {
+        velocity.y = 0;
+    }
+
+    void update()
+    {
+        AnimatedSprite::update();
+        move(velocity.x * speed, velocity.y * speed);
+    } 
 }; 
+
+#endif

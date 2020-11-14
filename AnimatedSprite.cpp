@@ -1,3 +1,6 @@
+#ifndef ANIMATEDSPRITE
+#define ANIMATEDSPRITE 
+
 #include <stdlib.h>
 #include <iostream>
 #include <SFML/Graphics.hpp> 
@@ -21,9 +24,10 @@ public:
     bool attacking = false;
 
 public:
-    AnimatedSprite(string file)
+    AnimatedSprite(string file, Vector2f position = Vector2f(0,0))
     {
         initRendering(file);
+        setPosition(position);
     }
 
     void initRendering(string file)
@@ -67,13 +71,7 @@ public:
 
 
 
-        int attackOffset;
-        if(attacking)
-            attackOffset = 4;
-        else 
-            attackOffset = 0; //attacking ? 0 : 4;
-
-        cout << attackOffset << endl;
+        int attackOffset = attacking ? 4 : 0;
         setTextureRect(IntRect(16 * state, 32 * (yOffset + attackOffset), 16, 32));
 
         if(velocity == Vector2f(0,0))
@@ -86,7 +84,7 @@ public:
     {
         if(attacking)
             velocity = Vector2f(0, 0);
-            
+
         if(!animationTime--)
         {
             if(!idle || attacking)
@@ -98,3 +96,5 @@ public:
         }
     } 
 };
+
+#endif
