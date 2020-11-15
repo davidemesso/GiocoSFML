@@ -1,8 +1,10 @@
 #include <SFML/Graphics.hpp> 
 #include "Player.cpp"
 #include "Enemy.cpp"
+#include "Coin.cpp"
 #include <vector>
 #include <random>
+#include <memory>
 
 using namespace sf;
 
@@ -17,13 +19,14 @@ int main()
     const float FPS = 60.0f;
     bool redraw = true;
 
-    std::vector<Enemy*> enemies;
+    std::vector<shared_ptr<Enemy>> enemies;
 
     int kills = 0;
     Font font;
     if (!font.loadFromFile("font/Gioco-Regular.ttf"));
     Text killCounter;
     Text lifeCounter;
+    Text coinCounter;
 
     killCounter.setFont(font);
     killCounter.setCharacterSize(48);  
@@ -33,11 +36,17 @@ int main()
     lifeCounter.setCharacterSize(48);  
     lifeCounter.setColor(sf::Color::Red);
 
+    coinCounter.setFont(font);
+    coinCounter.setCharacterSize(48);  
+    coinCounter.setColor(sf::Color::Red);
+
     Player p("Lapis", 500, 12, "img/character.png");
-    Enemy e("vila", 50, 12, "img/log.png", &p); 
-    enemies.push_back(&e);
+    auto e = make_shared<Enemy>("vila", 50, 12, "img/log.png", &p); 
+    enemies.push_back(e);
     for(int i = 0; i < 3; i++)
-        enemies.push_back(new Enemy("vila", 50, 12, "img/log.png", &p));
+        enemies.emplace_back(new Enemy("vila", 50, 12, "img/log.png", &p));
+
+    std::vector<shared_ptr<Coin>> coins;
 
     Texture background;
     if (!background.loadFromFile("img/tileset.png"));
@@ -132,14 +141,15 @@ int main()
         std::uniform_int_distribution<> poss(0, 300);
 
         Vector2f pos = Vector2f(distr(gen), distr(gen));
-        if(poss(gen) > 292 && enemies.size() <= 20)
-            enemies.push_back(new Enemy("vila", 50, 12, "img/log.png", &p, pos));
+        if(poss(gen) > 292 && enemies.size() <= 25)
+            enemies.emplace_back(new Enemy("vila", 50, 12, "img/log.png", &p, pos));
 
         for(int i = enemies.size()-1; i >= 0; i--)
         {
             enemies[i]->update();
             if(!enemies[i]->isVisible())
             {
+                coins.emplace_back(new Coin(enemies[i]->getPosition()));
                 enemies.erase(enemies.begin()+i);
                 kills++;
             }
@@ -157,17 +167,31 @@ int main()
                 enemies[i]->draws(window);     
                 p.interact(enemies[i]);    
             } 
+            for(int i = coins.size()-1; i >= 0; i--)
+            {
+                if(coins[i]->update())
+                {
+                    coins.erase(coins.begin()+i);
+                    continue;
+                }
+                window.draw(*coins[i]); 
+                if(coins[i]->collect(&p))
+                    coins.erase(coins.begin()+i);
+            } 
 
             followPlayer.setCenter(p.getPosition());
             window.setView(followPlayer);
 
             killCounter.setPosition(followPlayer.getCenter().x - WIDTH/2, followPlayer.getCenter().y - HEIGHT/2); 
             lifeCounter.setPosition(followPlayer.getCenter().x, followPlayer.getCenter().y - HEIGHT/2); 
+            coinCounter.setPosition(followPlayer.getCenter().x - WIDTH/2, followPlayer.getCenter().y + HEIGHT/3); 
 
             killCounter.setString("Nemici uccisi; " + to_string(kills));
             lifeCounter.setString("Vita; " + to_string(static_cast<int>(p.life)));
+            coinCounter.setString("Soldi; " + to_string(static_cast<int>(p.coins)));
             window.draw(killCounter);
             window.draw(lifeCounter);
+            window.draw(coinCounter);
 
             window.display();
         }

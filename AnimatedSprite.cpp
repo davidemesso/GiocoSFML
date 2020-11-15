@@ -20,8 +20,10 @@ public:
     int attackState = 0;
     int animationSpeed = 10;
     int animationTime = animationSpeed;
-    int attackSpeed = 10;
-    int attackTime = attackSpeed;
+    int attackSpeed = 50;
+    int attackCooldown = attackSpeed;
+    int attackMaxTime = 10;
+    int attackTime = attackMaxTime;
     Vector2f velocity = Vector2f(0,0);
     int yOffset = 0;
     bool attacking = false;
@@ -99,15 +101,33 @@ public:
             animationTime = animationSpeed;
         }
 
-        if(!attackTime--)
-        {
-            if(attacking)
-                attackState = (attackState+1) % 3;
-            else 
-                attackState = 0;
+        // if(attackCooldown--)
+        //     return;
+        // else
+        //     attackCooldown = attackSpeed;
 
-            animate();
-            attackTime = attackSpeed;
+        if(!attacking)
+            attackState = 0;
+        
+        if(attackCooldown--)
+        {
+            if(!attackTime--)
+            {
+                if(attacking)
+                {
+                    attackState++;
+                    if(attackState == 3)
+                    {
+                        attackState = 0;
+                        attackCooldown = attackSpeed;
+                    }
+                }
+                else 
+                    attackState = 0;
+
+                animate();
+                attackTime = attackMaxTime;
+            }
         }
     } 
 

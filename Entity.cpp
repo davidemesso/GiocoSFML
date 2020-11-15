@@ -48,6 +48,13 @@ public:
         velocity.y = 0;
     }
 
+    void hit()
+    {
+        setColor(Color::Red);
+        life-=4;
+        move(-velocity.x * 3, -velocity.y * 3);
+    }
+
     void update()
     {
         AnimatedSprite::update();

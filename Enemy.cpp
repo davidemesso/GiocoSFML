@@ -28,7 +28,7 @@ public:
 
         setPosition(distr(gen), distr(gen));
         this->target = target;
-        speed = 0.5;
+        speed = 0.8;
     } 
 
     void update()
