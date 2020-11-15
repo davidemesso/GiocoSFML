@@ -13,6 +13,7 @@ using namespace std;
 class Player : public Entity
 {
 private:
+    int range = 40;
 public:
     // INHERITED ENTITY FIELDS 
     // Inventory inventory
@@ -25,11 +26,24 @@ public:
         speed = 3;
     } 
 
-    // For future custom drawing function
-    // void draw(sf::RenderTarget &window, sf::RenderStates state) const 
-    // {
-    //     window.draw(sprite);
-    // }
+    void interact(Entity* e)
+    {
+        Vector2f pos = getPosition();
+        Vector2f ePos = e->getPosition();
+        if(abs(pos.x-ePos.x) < range && abs(pos.y-ePos.y) < range)
+            if(attacking)
+                e->life--;
+        if (abs(pos.x-ePos.x) < 20 && abs(pos.y-ePos.y) < 20)
+            life--;
+    }
+
+    void update()
+    {
+        if(this->life < 0) 
+            setVisibility(false);
+            // WILL BE GAME OVER
+        Entity::update();
+    } 
 }; 
 
 #endif

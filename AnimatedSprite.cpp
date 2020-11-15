@@ -17,8 +17,11 @@ private:
 
 public:
     int state = 0;
-    int animationSpeed = 25;
+    int attackState = 0;
+    int animationSpeed = 10;
     int animationTime = animationSpeed;
+    int attackSpeed = 10;
+    int attackTime = attackSpeed;
     Vector2f velocity = Vector2f(0,0);
     int yOffset = 0;
     bool attacking = false;
@@ -72,7 +75,10 @@ public:
         }
 
         int attackOffset = attacking ? 4 : 0;
-        setTextureRect(IntRect(16 * state, 32 * (yOffset + attackOffset), 16, 32));
+        if(!attacking)
+            setTextureRect(IntRect(16 * state, 32 * (yOffset + attackOffset), 16, 32));
+        else
+            setTextureRect(IntRect(16 * attackState, 32 * (yOffset + attackOffset), 16, 32));
 
         idle = velocity == Vector2f(0,0)? true : false;
     }   
@@ -84,14 +90,32 @@ public:
 
         if(!animationTime--)
         {
-            if(!idle || attacking)
+            if(!idle)
                 state = (state+1) % 3;
             else 
                 state = 0;
+
             animate();
             animationTime = animationSpeed;
         }
+
+        if(!attackTime--)
+        {
+            if(attacking)
+                attackState = (attackState+1) % 3;
+            else 
+                attackState = 0;
+
+            animate();
+            attackTime = attackSpeed;
+        }
     } 
+
+    void draws(sf::RenderTarget &window)
+    {
+        if(isVisible())
+            window.draw(*this);
+    }
 };
 
 #endif

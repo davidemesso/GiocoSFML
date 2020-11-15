@@ -2,14 +2,16 @@
 #include "Player.cpp"
 #include "Enemy.cpp"
 #include <vector>
+#include <random>
 
 using namespace sf;
 
+#define WIDTH 640
+#define HEIGHT 600
+
 int main() 
 {
-    RenderWindow window(VideoMode(640, 600), "Nice game bruh!");
-    CircleShape shape(100.f);
-    shape.setFillColor(Color::Green);
+    RenderWindow window(VideoMode(WIDTH, HEIGHT), "Nice game bruh!");
 
     Clock clock;
     const float FPS = 60.0f;
@@ -17,11 +19,25 @@ int main()
 
     std::vector<Enemy*> enemies;
 
-    Player p("Lapis", 12, 12, "img/character.png");
-    Enemy e("vila", 12, 12, "img/log.png", &p); 
+    int kills = 0;
+    Font font;
+    if (!font.loadFromFile("font/Gioco-Regular.ttf"));
+    Text killCounter;
+    Text lifeCounter;
+
+    killCounter.setFont(font);
+    killCounter.setCharacterSize(48);  
+    killCounter.setColor(sf::Color::Red);
+
+    lifeCounter.setFont(font);
+    lifeCounter.setCharacterSize(48);  
+    lifeCounter.setColor(sf::Color::Red);
+
+    Player p("Lapis", 500, 12, "img/character.png");
+    Enemy e("vila", 50, 12, "img/log.png", &p); 
     enemies.push_back(&e);
-    for(int i = 0; i < 10; i++)
-        enemies.push_back(new Enemy("vila", 12, 12, "img/log.png", &p));
+    for(int i = 0; i < 3; i++)
+        enemies.push_back(new Enemy("vila", 50, 12, "img/log.png", &p));
 
     Texture background;
     if (!background.loadFromFile("img/tileset.png"));
@@ -109,22 +125,49 @@ int main()
         }   
 
         p.update();
-        for(int i = 0; i < enemies.size(); i++)
+
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(-300, 300);
+        std::uniform_int_distribution<> poss(0, 300);
+
+        Vector2f pos = Vector2f(distr(gen), distr(gen));
+        if(poss(gen) > 292 && enemies.size() <= 20)
+            enemies.push_back(new Enemy("vila", 50, 12, "img/log.png", &p, pos));
+
+        for(int i = enemies.size()-1; i >= 0; i--)
+        {
             enemies[i]->update();
+            if(!enemies[i]->isVisible())
+            {
+                enemies.erase(enemies.begin()+i);
+                kills++;
+            }
+        }
 
         // Draw
         if(redraw)
         {
             window.clear();
             window.draw(bg);
-            window.draw(p);
+            p.draws(window);
 
             for(int i = 0; i < enemies.size(); i++)
-                if(enemies[i]->isVisible())
-                    window.draw(*enemies[i]);      
+            {
+                enemies[i]->draws(window);     
+                p.interact(enemies[i]);    
+            } 
 
             followPlayer.setCenter(p.getPosition());
             window.setView(followPlayer);
+
+            killCounter.setPosition(followPlayer.getCenter().x - WIDTH/2, followPlayer.getCenter().y - HEIGHT/2); 
+            lifeCounter.setPosition(followPlayer.getCenter().x, followPlayer.getCenter().y - HEIGHT/2); 
+
+            killCounter.setString("Nemici uccisi; " + to_string(kills));
+            lifeCounter.setString("Vita; " + to_string(static_cast<int>(p.life)));
+            window.draw(killCounter);
+            window.draw(lifeCounter);
 
             window.display();
         }
