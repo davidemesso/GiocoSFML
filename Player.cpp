@@ -14,7 +14,7 @@ using namespace std;
 class Player : public Entity
 {
 private:
-    int range = 45;
+    int range = 50;
 public:
     int coins = 0;
     // INHERITED ENTITY FIELDS 
@@ -27,6 +27,9 @@ public:
     {
         attackSpeed = 20;
         speed = 3;
+        atk = 10;
+        redBlinking = 50;
+        deathOffset = 8;
     } 
 
     void interact(shared_ptr<Entity> e)
@@ -35,16 +38,18 @@ public:
         Vector2f ePos = e->getPosition();
         if(abs(pos.x-ePos.x) < range && abs(pos.y-ePos.y) < range)
             if(attacking && attackState == 1)
-                e->hit();
+                e->hit(true, atk);
         if (abs(pos.x-ePos.x) < 20 && abs(pos.y-ePos.y) < 20)
-            life--;
+            hit(false, e->atk);
     }
 
     void update()
     {
-        if(this->life < 0) 
-            setVisibility(false);
-            // WILL BE GAME OVER
+        if(life <= 0)
+        {
+            setScale(10,10);
+            //end game
+        }
         Entity::update();
     } 
 }; 

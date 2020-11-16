@@ -28,17 +28,12 @@ public:
 
         setPosition(distr(gen), distr(gen));
         this->target = target;
-        speed = 0.8;
+        speed = 0.7;
+        this->atk = attack;
     } 
 
     void update()
     {
-        if(life<0)
-        {
-            setVisibility(false);
-            return;
-        }
-
         Vector2f pos = getPosition();
         Vector2f tarPos = target->getPosition();
      

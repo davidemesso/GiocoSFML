@@ -27,6 +27,7 @@ public:
     Vector2f velocity = Vector2f(0,0);
     int yOffset = 0;
     bool attacking = false;
+    bool animatingDeath = false;
 
 public:
     AnimatedSprite(){};
@@ -61,6 +62,8 @@ public:
 
     void animate()
     {
+        if(animatingDeath )
+            return;
         if(velocity.x == 0)
         {
             if(velocity.y == 1)
@@ -109,26 +112,23 @@ public:
         if(!attacking)
             attackState = 0;
         
-        if(attackCooldown--)
+        if(!attackTime--)
         {
-            if(!attackTime--)
+            if(attacking)
             {
-                if(attacking)
-                {
-                    attackState++;
-                    if(attackState == 3)
-                    {
-                        attackState = 0;
-                        attackCooldown = attackSpeed;
-                    }
-                }
-                else 
+                attackState++;
+                if(attackState == 3)
                     attackState = 0;
-
-                animate();
-                attackTime = attackMaxTime;
             }
+            else 
+                attackState = 0;
+
+            animate();
+            attackTime = attackSpeed;
         }
+
+        
+        
     } 
 
     void draws(sf::RenderTarget &window)

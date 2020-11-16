@@ -40,11 +40,11 @@ int main()
     coinCounter.setCharacterSize(48);  
     coinCounter.setColor(sf::Color::Red);
 
-    Player p("Lapis", 500, 12, "img/character.png");
-    auto e = make_shared<Enemy>("vila", 50, 12, "img/log.png", &p); 
+    Player p("Lapis", 50, 12, "img/character.png");
+    auto e = make_shared<Enemy>("vila", 20, 12, "img/log.png", &p); 
     enemies.push_back(e);
     for(int i = 0; i < 3; i++)
-        enemies.emplace_back(new Enemy("vila", 50, 12, "img/log.png", &p));
+        enemies.emplace_back(new Enemy("vila", 20, 12, "img/log.png", &p));
 
     std::vector<shared_ptr<Coin>> coins;
 
@@ -141,8 +141,8 @@ int main()
         std::uniform_int_distribution<> poss(0, 300);
 
         Vector2f pos = Vector2f(distr(gen), distr(gen));
-        if(poss(gen) > 292 && enemies.size() <= 25)
-            enemies.emplace_back(new Enemy("vila", 50, 12, "img/log.png", &p, pos));
+        if(poss(gen) > 297 && enemies.size() <= 8)
+            enemies.emplace_back(new Enemy("vila", 30, 20, "img/log.png", &p, pos));
 
         for(int i = enemies.size()-1; i >= 0; i--)
         {
@@ -165,7 +165,7 @@ int main()
             for(int i = 0; i < enemies.size(); i++)
             {
                 enemies[i]->draws(window);     
-                p.interact(enemies[i]);    
+                p.interact(enemies[i]);
             } 
             for(int i = coins.size()-1; i >= 0; i--)
             {

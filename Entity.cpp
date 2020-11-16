@@ -11,7 +11,13 @@ using namespace std;
 
 class Entity : public AnimatedSprite
 {
+private:
+    int redTime = 0;
+    int deathState = 0;
+    int deathTime = 40;
 public:
+    int redBlinking = 20;
+    int deathOffset = 4;
     string name; 
     float atk; 
     float life;
@@ -48,15 +54,41 @@ public:
         velocity.y = 0;
     }
 
-    void hit()
+    void hit(bool knockback, int damage)
     {
-        setColor(Color::Red);
-        life-=4;
-        move(-velocity.x * 3, -velocity.y * 3);
+        if(!redTime)
+        {
+            setColor(Color::Red);
+            redTime = redBlinking;
+            life-=damage;
+        }
+        if(knockback)
+            move(-velocity.x * 1.5, -velocity.y * 1.5);
     }
 
     void update()
     {
+
+        if(life<=0)
+            animatingDeath = true;
+        if(animatingDeath )
+        {
+            if(!deathTime--)
+            {
+                setColor(Color::White);
+                setTextureRect(IntRect(deathState * 16, 32 * deathOffset, 16, 32));
+                deathState++;
+                if(deathState == 4)
+                    setVisibility(false);
+                deathTime = 5;
+            }
+            return;
+        }
+
+        if(redTime > 0)
+            redTime--;
+        else 
+            setColor(Color::White);
         AnimatedSprite::update();
         move(velocity.x * speed, velocity.y * speed);
     } 
