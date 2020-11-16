@@ -79,7 +79,10 @@ public:
                 setTextureRect(IntRect(deathState * 16, 32 * deathOffset, 16, 32));
                 deathState++;
                 if(deathState == 4)
+                {
                     setVisibility(false);
+                    animatingDeath = false;
+                }
                 deathTime = 5;
             }
             return;

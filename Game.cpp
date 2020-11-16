@@ -133,7 +133,14 @@ int main()
             p.animate();
         }   
 
-        p.update();
+        if(!p.update())
+        {
+            enemies.clear();
+            coins.clear();
+            p = *(new Player("Lapis", 50, 12, "img/character.png"));
+            for(int i = 0; i < 3; i++)
+                enemies.emplace_back(new Enemy("vila", 20, 12, "img/log.png", &p));
+        }
 
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator

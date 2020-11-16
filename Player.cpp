@@ -43,14 +43,17 @@ public:
             hit(false, e->atk);
     }
 
-    void update()
+    bool update()
     {
+        bool ret = true;
+        Entity::update();
         if(life <= 0)
         {
             setScale(10,10);
-            //end game
+            if(!animatingDeath)
+                ret = false;
         }
-        Entity::update();
+        return ret;
     } 
 }; 
 
