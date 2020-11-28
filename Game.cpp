@@ -1,18 +1,19 @@
 #include <SFML/Graphics.hpp> 
-#include "Player.cpp"
-#include "Enemy.cpp"
-#include "Coin.cpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "Coin.hpp"
 #include <vector>
 #include <random>
 #include <memory>
 
 using namespace sf;
-
-#define WIDTH 640
-#define HEIGHT 600
+using namespace std;
 
 int main() 
 {
+    constexpr auto WIDTH = 640;
+    constexpr auto HEIGHT = 600;
+
     RenderWindow window(VideoMode(WIDTH, HEIGHT), "Nice game bruh!");
 
     Clock clock;
@@ -30,15 +31,15 @@ int main()
 
     killCounter.setFont(font);
     killCounter.setCharacterSize(48);  
-    killCounter.setColor(sf::Color::Red);
+    killCounter.setFillColor(sf::Color::Red);
 
     lifeCounter.setFont(font);
     lifeCounter.setCharacterSize(48);  
-    lifeCounter.setColor(sf::Color::Red);
+    lifeCounter.setFillColor(sf::Color::Red);
 
     coinCounter.setFont(font);
     coinCounter.setCharacterSize(48);  
-    coinCounter.setColor(sf::Color::Red);
+    coinCounter.setFillColor(sf::Color::Red);
 
     Player p("Lapis", 50, 12, "img/character.png");
     auto e = make_shared<Enemy>("vila", 20, 12, "img/log.png", &p); 
@@ -131,7 +132,7 @@ int main()
             }
 
             p.animate();
-        }   
+        }
 
         if(!p.update())
         {
@@ -181,8 +182,8 @@ int main()
                     coins.erase(coins.begin()+i);
                     continue;
                 }
-                window.draw(*coins[i]); 
-                if(coins[i]->collect(&p))
+                window.draw(*coins[i]);
+                if(coins[i]->collect(p))
                     coins.erase(coins.begin()+i);
             } 
 
